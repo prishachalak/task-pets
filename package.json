@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@kaloraat/react-native-text": "^1.0.4"
+  }
+}
