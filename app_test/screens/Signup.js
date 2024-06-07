@@ -7,7 +7,7 @@ import axios from 'axios';
 import CircleLogo from '../components/auth/CircleLogo';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-const Signup = () => {
+const Signup = ({ navigation }) => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -74,7 +74,7 @@ const Signup = () => {
                     loading={loading}
                 />
                 <Text small center>
-                    Already Joined? <Text color='#ff2222'>Sign In</Text>
+                    Already Joined? <Text color='#ff2222' onPress={() => navigation.navigate("Signin")}>Sign In</Text>
                 </Text>
             </View>
         </KeyboardAwareScrollView>
