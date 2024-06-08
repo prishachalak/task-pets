@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, TextInput } from 'react-native';
-import Text from '@kaloraat/react-native-text';
+import { View, TextInput, Text } from 'react-native';
 
 const UserInput = ({ 
     name, 
@@ -12,7 +11,12 @@ const UserInput = ({
 }) => {
     return (
         <View style={{ marginHorizontal:24 }}>
-            <Text semi color="#4d0000">{name}</Text>
+            <Text style={{
+                color: "#4d0000",
+                fontSize: 15,
+            }}>
+                {name}
+            </Text>
             <TextInput 
                 autoCorrect={false}
                 autoCapitalize={autoCapitalize}

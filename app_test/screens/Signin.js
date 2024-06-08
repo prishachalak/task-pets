@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { View } from 'react-native';
-import Text from '@kaloraat/react-native-text';
+import { View, Text } from 'react-native';
 import UserInput from '../components/auth/UserInput';
 import SubmitButton from '../components/auth/SubmitButton';
 import axios from 'axios';
@@ -14,14 +13,13 @@ const Signin = ({navigation}) => {
 
     const handleSubmit = async () => {
         setLoading(true)
-        if (!name || !email || !password) {
+        if (!email || !password) {
             alert("All fields are required!");
             setLoading(false);
             return;
         }
         try {
             const {data} = await axios.post('http://localhost:8000/api/signin', {
-                name, 
                 email, 
                 password
             });
@@ -43,7 +41,12 @@ const Signin = ({navigation}) => {
         >
             <View style={{ marginVertical: 100 }}>
                 <CircleLogo />
-                <Text title bold center >
+                <Text style={{
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                    fontSize: 25, 
+                    marginBottom: 20,
+                }} >
                     Sign In
                 </Text>
                 <UserInput 
@@ -61,14 +64,28 @@ const Signin = ({navigation}) => {
                     autoCompleteType="password"
                 />
                 <SubmitButton 
-                    title="Sign Up" 
+                    title="Sign In" 
                     handleSubmit={handleSubmit} 
                     loading={loading}
                 />
-                <Text small center>
-                    New Here? <Text bold color='#4d4d33' onPress={() => navigation.navigate('Signup')}>Sign Up</Text>
+                <Text style={{
+                    textAlign: 'center',
+                    fontSize: 13
+                }}>
+                    New Here? <Text style={{
+                        fontWeight: 'bold',
+                        fontSize: 13,
+                        textAlign: 'center',
+                        color: '#ff2222',
+                    }} onPress={() => navigation.navigate('Signup')}>Sign Up</Text>
                 </Text>
-                <Text small center bold color='#4d4d33' style={{ marginTop: 6}}>
+                <Text style={{ 
+                    marginTop: 6,
+                    fontSize: 13,
+                    textAlign: 'center',
+                    color: '#ff2222',
+                    fontWeight: 'bold',
+                }}>
                     Forgot Password?
                 </Text>
             </View>

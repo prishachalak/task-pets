@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { View } from 'react-native';
-import Text from '@kaloraat/react-native-text';
+import { View, Text } from 'react-native';
 import UserInput from '../components/auth/UserInput';
 import SubmitButton from '../components/auth/SubmitButton';
 import axios from 'axios';
@@ -42,9 +41,16 @@ const Signup = ({ navigation }) => {
                 justifyContent: 'center',
             }}
         >
-            <View style={{ marginVertical: 100 }}>
+            <View style={{ 
+                marginVertical: 100, 
+            }}>
                 <CircleLogo />
-                <Text title bold center >
+                <Text style={{
+                    fontWeight: 'bold',
+                    fontSize: 25, 
+                    marginBottom: 20,
+                    textAlign: 'center',
+                }}>
                     Sign Up
                 </Text>
                 <UserInput 
@@ -73,8 +79,10 @@ const Signup = ({ navigation }) => {
                     handleSubmit={handleSubmit} 
                     loading={loading}
                 />
-                <Text small center>
-                    Already Joined? <Text color='#ff2222' onPress={() => navigation.navigate("Signin")}>Sign In</Text>
+                <Text style={{fontSize: 13, textAlign: 'center'}}>
+                    Already Joined?  <Text style={{fontWeight: 'bold', color: '#ff2222'}} onPress={() => navigation.navigate("Signin")}>
+                        Sign In
+                    </Text>
                 </Text>
             </View>
         </KeyboardAwareScrollView>

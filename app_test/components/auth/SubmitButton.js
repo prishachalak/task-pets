@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity } from 'react-native';
-import Text from '@kaloraat/react-native-text';
+import { View, TouchableOpacity, Text } from 'react-native';
 
 const SubmitButton = ({ title, handleSubmit, loading }) => {
     return (
@@ -15,7 +14,7 @@ const SubmitButton = ({ title, handleSubmit, loading }) => {
                 borderRadius: 10
             }}
             >
-            <Text bold medium center>
+            <Text style={{fontWeight: 'bold', textAlign: 'center'}}>
                 {loading ? 'Please wait...' : title}
             </Text>
         </TouchableOpacity>
