@@ -3,7 +3,7 @@ import { View, Text } from 'react-native';
 import UserInput from '../components/auth/UserInput';
 import SubmitButton from '../components/auth/SubmitButton';
 import axios from 'axios';
-import CircleLogo from '../components/auth/CircleLogo';
+import Logo from '../components/auth/Logo';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 const Signin = ({navigation}) => {
@@ -40,7 +40,7 @@ const Signin = ({navigation}) => {
             }}
         >
             <View style={{ marginVertical: 100 }}>
-                <CircleLogo />
+                <Logo />
                 <Text style={{
                     fontWeight: 'bold',
                     textAlign: 'center',

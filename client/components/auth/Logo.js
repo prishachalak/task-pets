@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Image } from 'react-native';
 
-const CircleLogo = () => {
+const Logo = () => {
     return (
         <View
             style={{
@@ -17,4 +17,4 @@ const CircleLogo = () => {
     )
 }
 
-export default CircleLogo;
+export default Logo;
