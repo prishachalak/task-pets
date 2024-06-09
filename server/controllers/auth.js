@@ -24,9 +24,14 @@ export const signup = async (req, res) => {
         error: "Email is required",
       });
     }
-    if (!password || password.length < 6) {
+    if (!password) {
       return res.json({
-        error: "Password is required and should be 6 characters long",
+        error: "Password is required",
+      });
+    }
+    if (password.length < 6) {
+      return res.json({
+        error: "Password should be at least 6 characters long",
       });
     }
     const exist = await User.findOne({ email });
@@ -72,14 +77,14 @@ export const signin = async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) {
       return res.json({
-        error: "No user found",
+        error: "Email is not registered",
       });
     }
     // check password
     const match = await comparePassword(password, user.password);
     if (!match) {
       return res.json({
-        error: "Wrong password",
+        error: "Incorrect password",
       });
     }
     // create signed token

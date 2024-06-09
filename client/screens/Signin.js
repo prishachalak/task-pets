@@ -24,9 +24,14 @@ const Signin = ({navigation}) => {
                 email, 
                 password
             });
-            setLoading(false);
-            console.log('SIGN IN SUCCESS =>', data);
-            alert("Sign In successful");
+            if (data.error) {
+                alert(data.error);
+                setLoading(false);
+            } else {
+                setLoading(false);
+                console.log('SIGN IN SUCCESS =>', data);
+                alert("Sign Up Successful");
+            }
         } catch (err) {
             alert('Sign up failed, try again.')
             console.log(err)
