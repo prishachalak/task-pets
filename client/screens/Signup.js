@@ -4,7 +4,8 @@ import UserInput from '../components/auth/UserInput';
 import SubmitButton from '../components/auth/SubmitButton';
 import axios from 'axios';
 import Logo from '../components/auth/Logo';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+//import { signup } from '../../server/controllers/auth';
 
 const Signup = ({ navigation }) => {
     const [name, setName] = useState("");
@@ -18,7 +19,7 @@ const Signup = ({ navigation }) => {
             alert("All fields are required!");
             setLoading(false);
             return;
-        }
+        } 
         try {
             const {data} = await axios.post('http://localhost:8000/api/signup', {
                 name, 
@@ -29,6 +30,7 @@ const Signup = ({ navigation }) => {
             console.log('SIGN IN SUCCESS =>', data);
             alert("Sign Up successful");
         } catch (err) {
+            alert('Sign in failed, try again.')
             console.log(err)
             setLoading(false);
         }
@@ -55,13 +57,15 @@ const Signup = ({ navigation }) => {
                 </Text>
                 <UserInput 
                     name="NAME:" 
+                    name2="name"
                     value={name} 
                     setValue={setName} 
                     autoCapitalize="words"
                     autoCorrect={false}
                 />
                 <UserInput 
-                    name="EMAIL:" 
+                    name="EMAIL:"
+                    name2="email" 
                     value={email} 
                     setValue={setEmail}
                     autoCompleteType="email"
@@ -69,6 +73,7 @@ const Signup = ({ navigation }) => {
                 />
                 <UserInput 
                     name="PASSWORD:" 
+                    name2="password"
                     value={password} 
                     setValue={setPassword}
                     secureTextEntry={true}
@@ -80,7 +85,10 @@ const Signup = ({ navigation }) => {
                     loading={loading}
                 />
                 <Text style={{fontSize: 13, textAlign: 'center'}}>
-                    Already Joined?  <Text style={{fontWeight: 'bold', color: '#ff2222'}} onPress={() => navigation.navigate("Signin")}>
+                    Already Joined?  <Text style={{
+                        fontWeight: 'bold', 
+                        color: '#ff2222'
+                    }} onPress={() => navigation.navigate('Signin')}>
                         Sign In
                     </Text>
                 </Text>

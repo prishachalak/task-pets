@@ -3,6 +3,7 @@ import { View, TextInput, Text } from 'react-native';
 
 const UserInput = ({ 
     name, 
+    name2,
     value, 
     setValue, 
     autoCapitalize = "none", 
@@ -28,6 +29,7 @@ const UserInput = ({
                     borderBottomColor: '#666',
                     marginBottom: 30,
                 }}
+                placeholder={`Enter your ${name2} here`}
                 value={value}
                 onChangeText={(text) => setValue(text)}
             />

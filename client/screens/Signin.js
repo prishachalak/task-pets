@@ -4,7 +4,8 @@ import UserInput from '../components/auth/UserInput';
 import SubmitButton from '../components/auth/SubmitButton';
 import axios from 'axios';
 import Logo from '../components/auth/Logo';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+//import { signin } from '../../server/controllers/auth';
 
 const Signin = ({navigation}) => {
     const [email, setEmail] = useState("");
@@ -27,6 +28,7 @@ const Signin = ({navigation}) => {
             console.log('SIGN IN SUCCESS =>', data);
             alert("Sign In successful");
         } catch (err) {
+            alert('Sign up failed, try again.')
             console.log(err)
             setLoading(false);
         }
@@ -51,6 +53,7 @@ const Signin = ({navigation}) => {
                 </Text>
                 <UserInput 
                     name="EMAIL:" 
+                    name2="email"
                     value={email} 
                     setValue={setEmail}
                     autoCompleteType="email"
@@ -58,6 +61,7 @@ const Signin = ({navigation}) => {
                 />
                 <UserInput 
                     name="PASSWORD:" 
+                    name2="password"
                     value={password} 
                     setValue={setPassword}
                     secureTextEntry={true}
