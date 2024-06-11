@@ -10,7 +10,7 @@ const Logo = () => {
             }}
         >
             <Image 
-                source={require('../../assets/favicon.png')}
+                source={require('../../assets/TP.png')}
                 style={{width: 100, height: 100, marginVertical: 20}}
             />
         </View>

@@ -9,7 +9,6 @@ const Welcome = ({navigation}) => {
       contentContainerStyle={{
         justifyContent: 'center',
         flex: 1,
-        //alignItems: 'center'
       }}
     >
       <Logo />
@@ -19,7 +18,7 @@ const Welcome = ({navigation}) => {
         fontSize: 25, 
         marginBottom: 20,
       }} >
-        Welcome
+        Welcome to TaskPets!
       </Text>
 
       <TouchableOpacity

@@ -1,1 +1,1 @@
-export const API = "https://funny-flowers-sort.loca.lt";
+export const API = "https://localhost:8000/api";
