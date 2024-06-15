@@ -14,7 +14,7 @@ const Signup = ({ navigation }) => {
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     //context
-    const [state, useState] = useContext(AuthContext);
+    const [state, setState] = useContext(AuthContext);
 
     const handleSubmit = async ({ nextPage }) => {
         setLoading(true)
@@ -45,7 +45,8 @@ const Signup = ({ navigation }) => {
             }
         } catch (err) {
             alert('Sign in failed, try again.')
-            console.log(err)
+            //console.log(err)
+            console.log(error.response.data)
             setLoading(false);
         }
     }
