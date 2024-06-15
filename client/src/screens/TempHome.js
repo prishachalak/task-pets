@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const Home = ({ navigation }) => {
@@ -18,6 +18,21 @@ const Home = ({ navigation }) => {
             }} >
                 Home
             </Text>
+            <TouchableOpacity
+                style={{
+                    backgroundColor:'lightslategrey',
+                    height: 40,
+                    marginBottom: 20, 
+                    justifyContent: 'center',
+                    marginHorizontal: 20,
+                    borderRadius: 10
+                }}
+                onPress={()=> navigation.navigate('Timetable')}
+            >
+                <Text style={{fontSize: 13, textAlign: 'center', fontWeight:'bold'}}>
+                    Timetable Page
+                </Text>
+            </TouchableOpacity>
         </KeyboardAwareScrollView>
     )
 }

@@ -4,6 +4,7 @@ import Welcome from './src/screens/Welcome';
 import Signup from './src/screens/Signup';
 import Signin from './src/screens/Signin';
 import Home from './src/screens/TempHome';
+import Timetable from './src/screens/Timetable';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthProvider } from './context/auth';
@@ -19,6 +20,7 @@ export default function App() {
           <Stack.Screen name="Signup" component={Signup}/>
           <Stack.Screen name="Signin" component={Signin}/>
           <Stack.Screen name="Home" component={Home}/>
+          <Stack.Screen name="Timetable" component={Timetable}/>
         </Stack.Navigator>  
       </AuthProvider>
     </NavigationContainer>
