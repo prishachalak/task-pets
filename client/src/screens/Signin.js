@@ -35,7 +35,7 @@ const Signin = ({navigation}) => {
                 // save response in async storage
                 await AsyncStorage.setItem('@auth', JSON.stringify(data));
                 setLoading(false);
-                console.log('SIGN IN SUCCESS =>', data);
+                //console.log('SIGN IN SUCCESS =>', data);
                 alert("Sign Up Successful");
                 navigation.navigate('Home');
             }

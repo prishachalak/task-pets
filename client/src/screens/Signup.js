@@ -39,14 +39,14 @@ const Signup = ({ navigation }) => {
                 // save response in async storage
                 await AsyncStorage.setItem('@auth', JSON.stringify(data));
                 setLoading(false);
-                console.log('SIGN IN SUCCESS =>', data);
+                //console.log('SIGN IN SUCCESS =>', data);
                 alert("Sign Up Successful");
                 navigation.navigate('Signin');
             }
         } catch (err) {
             alert('Sign in failed, try again.')
-            //console.log(err)
-            console.log(error.response.data)
+            console.log(err)
+            //console.log(error.response.data)
             setLoading(false);
         }
     }

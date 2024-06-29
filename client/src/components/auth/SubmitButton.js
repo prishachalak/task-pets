@@ -6,7 +6,8 @@ const SubmitButton = ({ title, handleSubmit, loading }) => {
         <TouchableOpacity
             onPress={handleSubmit}
             style={{
-                backgroundColor:"#ccccb3",
+                //backgroundColor:"#ccccb3",
+                backgroundColor:'lightslategrey',
                 height: 40,
                 marginBottom: 20, 
                 justifyContent: 'center',

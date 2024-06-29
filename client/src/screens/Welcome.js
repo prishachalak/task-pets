@@ -24,7 +24,8 @@ const Welcome = ({navigation}) => {
       <TouchableOpacity
         onPress={() => navigation.navigate('Signin')}
         style={{
-          backgroundColor:"#ccccb3",
+          //backgroundColor:"#ccccb3",
+          backgroundColor:'lightslategrey',
           height: 40,
           marginBottom: 20, 
           justifyContent: 'center',
@@ -39,7 +40,8 @@ const Welcome = ({navigation}) => {
       <TouchableOpacity
         onPress={() => navigation.navigate('Signup')}
         style={{
-          backgroundColor:"#ccccb3",
+          //backgroundColor:"#ccccb3",
+          backgroundColor:'lightslategrey',
           height: 40,
           marginBottom: 20, 
           justifyContent: 'center',
