@@ -5,6 +5,7 @@ import Signup from './src/screens/Signup';
 import Signin from './src/screens/Signin';
 import Home from './src/screens/TempHome';
 import Timetable from './src/screens/Timetable';
+import Discussion from './src/screens/Discussion';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthProvider } from './context/auth';
@@ -21,6 +22,7 @@ export default function App() {
           <Stack.Screen name="Signin" component={Signin}/>
           <Stack.Screen name="Home" component={Home}/>
           <Stack.Screen name="Timetable" component={Timetable}/>
+          <Stack.Screen name="Discussion" component={Discussion}/>
         </Stack.Navigator>  
       </AuthProvider>
     </NavigationContainer>

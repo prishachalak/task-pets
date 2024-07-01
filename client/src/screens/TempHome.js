@@ -30,7 +30,22 @@ const Home = ({ navigation }) => {
                 onPress={()=> navigation.navigate('Timetable')}
             >
                 <Text style={{fontSize: 13, textAlign: 'center', fontWeight:'bold'}}>
-                    Timetable Page
+                    Calendar Page
+                </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+                style={{
+                    backgroundColor:'lightslategrey',
+                    height: 40,
+                    marginBottom: 20, 
+                    justifyContent: 'center',
+                    marginHorizontal: 20,
+                    borderRadius: 10
+                }}
+                onPress={()=> navigation.navigate('Discussion')}
+            >
+                <Text style={{fontSize: 13, textAlign: 'center', fontWeight:'bold'}}>
+                    Discussion Forum
                 </Text>
             </TouchableOpacity>
         </KeyboardAwareScrollView>
