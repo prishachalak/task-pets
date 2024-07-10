@@ -16,7 +16,7 @@ const Signup = ({ navigation }) => {
     //context
     const [state, setState] = useContext(AuthContext);
 
-    const handleSubmit = async ({ nextPage }) => {
+    const handleSubmit = async () => {
         setLoading(true)
         if (!name || !email || !password) {
             alert("All fields are required!");

@@ -30,8 +30,12 @@ const userSchema = new Schema(
       url: "",
     },
     resetCode: "",
+    modules: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Module',
+    }],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("User", userSchema);
