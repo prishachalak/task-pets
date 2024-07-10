@@ -16,7 +16,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <AuthProvider>
-        <Stack.Navigator initialRouteName='Home'>
+        <Stack.Navigator initialRouteName='Welcome'>
           <Stack.Screen name="Welcome" component={Welcome}/>
           <Stack.Screen name="Signup" component={Signup}/>
           <Stack.Screen name="Signin" component={Signin}/>
