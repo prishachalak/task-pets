@@ -3,9 +3,10 @@ import { StatusBar } from 'expo-status-bar';
 import Welcome from './src/screens/Welcome';
 import Signup from './src/screens/Signup';
 import Signin from './src/screens/Signin';
-import Home from './src/screens/TempHome';
+import Home from './src/screens/Home';
 import Timetable from './src/screens/Timetable';
 import Profile from './src/screens/Profile';
+import TempQuest from './src/screens/TempQuest';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthProvider } from './context/auth';
@@ -23,6 +24,7 @@ export default function App() {
           <Stack.Screen name="Home" component={Home}/>
           <Stack.Screen name="Timetable" component={Timetable}/>
           <Stack.Screen name="Profile" component={Profile}/>
+          <Stack.Screen name="TempQuest" component={TempQuest}/>
         </Stack.Navigator>  
       </AuthProvider>
     </NavigationContainer>

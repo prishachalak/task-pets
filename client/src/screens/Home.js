@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
 import { View, Text, TouchableOpacity, ActivityIndicator, FlatList, Image, StyleSheet } from "react-native";
-//import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Searchbar } from "react-native-paper";
 import axios from "axios";
 import { AuthContext } from '../../context/auth';
@@ -11,7 +10,7 @@ const Home = ({ navigation }) => {
     const [modules, setModules] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [filteredModules, setFilteredModules] = useState([]);
-    const [state] = useContext(AuthContext);
+    const [state, setState] = useContext(AuthContext);
     const { user } = state;
 
     useEffect(() => {
@@ -42,12 +41,27 @@ const Home = ({ navigation }) => {
 
     const handleModuleClick = async module => {
         try {
-            const response = await axios.post(`/users/add-module`, { email: user.email, moduleId: module._id });
-            console.log('Module added to user:', response.data);
-            // Optionally, update local state or UI after successful addition
+            // Check if the module already exists in the user's modules
+            const moduleExists = user.modules.some(mod => mod.moduleCode === module[0]);
+            
+            if (moduleExists) {
+                alert("Module already added!");
+                return;
+            }
+    
+            // Update the user's modules on the server
+            const response = await axios.put(`http://localhost:8000/api/user/${user._id}/add-module`, { 
+                module: { moduleCode: module[0], title: module[1] } 
+            });
+    
+            // Update the local state with the new module list
+            const updatedUser = response.data;
+            setState(prevState => ({ ...prevState, user: updatedUser }));
+    
+            alert("Added module!");
         } catch (error) {
-            console.error('Error adding module to user:', error);
-            // Handle error (e.g., show error message to user)
+            console.error("Error adding module: ", error);
+            alert("Failed to add module. Please try again.");
         }
     };
 
@@ -72,7 +86,6 @@ const Home = ({ navigation }) => {
             <View style={styles.headerRow}>
                 <Text style={styles.text}>
                     Welcome {user ? user.name : 'Guest'}!
-                    
                 </Text>
                 <TouchableOpacity 
                     style={styles.iconContainer}
@@ -83,10 +96,6 @@ const Home = ({ navigation }) => {
                         style={styles.icon}
                     />
                 </TouchableOpacity>
-                {/* <Text style={styles.text}>
-                    Welcome {user ? user.name : 'Guest'}!
-                    
-                </Text> */}
             </View>
             <Searchbar
                 placeholder="Find your module"
@@ -114,7 +123,7 @@ const styles = StyleSheet.create({
         marginTop: 10
     },
     iconContainer: {
-        marginLeft: 140,
+        marginLeft: 'auto',
     },
     icon: {
         width: 30,
