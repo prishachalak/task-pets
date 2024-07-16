@@ -7,6 +7,7 @@ import Home from './src/screens/Home';
 import Timetable from './src/screens/Timetable';
 import Profile from './src/screens/Profile';
 import TempQuest from './src/screens/TempQuest';
+import LectureVideo from './src/screens/LectureVideo';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthProvider } from './context/auth';
@@ -17,7 +18,10 @@ export default function App() {
   return (
     <NavigationContainer>
       <AuthProvider>
-        <Stack.Navigator initialRouteName='Welcome'>
+        <Stack.Navigator 
+          initialRouteName='Welcome'
+          //screenOptions={{ headerShown: false }}
+        >
           <Stack.Screen name="Welcome" component={Welcome}/>
           <Stack.Screen name="Signup" component={Signup}/>
           <Stack.Screen name="Signin" component={Signin}/>
@@ -25,9 +29,13 @@ export default function App() {
           <Stack.Screen name="Timetable" component={Timetable}/>
           <Stack.Screen name="Profile" component={Profile}/>
           <Stack.Screen name="TempQuest" component={TempQuest}/>
+          <Stack.Screen 
+            name="Lecture Video" 
+            component={LectureVideo}
+            //screenOptions={{ headerShown: false }}
+          />
         </Stack.Navigator>  
       </AuthProvider>
     </NavigationContainer>
   );
 }
-

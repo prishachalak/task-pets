@@ -66,8 +66,12 @@ export default function Profile({navigation}) {
                                 </TouchableOpacity>
                             </View>
                             <Text>Code: {module.moduleCode}</Text>
-                            <Text>Title: {module.title} </Text>                        
+                            <Text>Title: {module.title} </Text>
+                            <TouchableOpacity onPress={() => navigation.navigate('Lecture Video')}>
+                                <Text style={styles.videoText}>Lecture Video</Text>
+                            </TouchableOpacity>                        
                         </TouchableOpacity>
+                        
                     </View>
                 ))
             ) : (
@@ -110,7 +114,7 @@ const styles = StyleSheet.create({
     },
     button: {
         backgroundColor:'lightslategrey',
-        height: 70,
+        height: 90,
         marginBottom: 20, 
         justifyContent: 'center',
         marginHorizontal: 6,
@@ -130,5 +134,9 @@ const styles = StyleSheet.create({
     deleteIcon: {
         width: 20,
         height: 20,
+    },
+    videoText: {
+        color: 'darkred',
+        fontWeight: 'bold'
     }
 })
