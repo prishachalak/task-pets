@@ -7,6 +7,7 @@ import Home from './src/screens/Home';
 import Timetable from './src/screens/Timetable';
 import Profile from './src/screens/Profile';
 import TempQuest from './src/screens/TempQuest';
+import QuizPage from './src/screens/QuizPage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthProvider } from './context/auth';
@@ -25,6 +26,7 @@ export default function App() {
           <Stack.Screen name="Timetable" component={Timetable}/>
           <Stack.Screen name="Profile" component={Profile}/>
           <Stack.Screen name="TempQuest" component={TempQuest}/>
+          <Stack.Screen name="Quiz" component={QuizPage} options={{ title: 'Quiz' }}/>
         </Stack.Navigator>  
       </AuthProvider>
     </NavigationContainer>
