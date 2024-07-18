@@ -9,6 +9,7 @@ import Profile from './src/screens/Profile';
 import TempQuest from './src/screens/TempQuest';
 import LectureVideo from './src/screens/LectureVideo';
 import TodoList from './src/screens/TodoList';
+import QuizPage from './src/screens/QuizPage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthProvider } from './context/auth';
@@ -29,6 +30,7 @@ export default function App() {
           <Stack.Screen name="TempQuest" component={TempQuest}/>
           <Stack.Screen name="Todo List" component={TodoList}/>
           <Stack.Screen name="Lecture Video" component={LectureVideo}/>
+          <Stack.Screen name="Quiz" component={QuizPage} options={{ title: 'Quiz' }}/>
         </Stack.Navigator>  
       </AuthProvider>
     </NavigationContainer>
