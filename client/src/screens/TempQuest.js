@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 
 const QuestPage = () => {
   const [quests, setQuests] = useState([
-    { id: 1, title: 'Quest 1 - ', description: 'Read the first chapter and complete the quiz to earn 100 points.', progress: 50, completed: false },
+    { id: 1, title: 'Quest 1', description: 'Read the first chapter and complete the quiz to earn 100 points.', progress: 50, completed: false },
     { id: 2, title: 'Quest 2', description: 'Watch the lecture video and take notes to earn 50 points.', progress: 20, completed: false },
   ]);
   const [showConfetti, setShowConfetti] = useState(false);
