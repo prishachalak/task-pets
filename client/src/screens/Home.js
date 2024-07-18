@@ -67,8 +67,8 @@ const Home = ({ navigation }) => {
 
     const renderModuleItem = ({ item }) => (
         <TouchableOpacity onPress={() => handleModuleClick(item)}>
-            <View style={{ padding: 10 }}>
-                <Text>{item[0]} - {item[1]}</Text>
+            <View style={styles.moduleItem}>
+                <Text style={styles.moduleText}>{item[0]} - {item[1]}</Text>
             </View>
         </TouchableOpacity>
     );
@@ -101,6 +101,7 @@ const Home = ({ navigation }) => {
                 placeholder="Find your module"
                 onChangeText={onChangeSearch}
                 value={searchQuery}
+                style={styles.searchBar}
             />
             <FlatList
                 data={filteredModules}
@@ -115,10 +116,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 10,
+        backgroundColor: '#ffffff',
     },
     headerRow: {
-        flexDirection: 'row', // Arrange items horizontally
-        alignItems: 'center', // Center items vertically
+        flexDirection: 'row', 
+        alignItems: 'center', 
         marginBottom: 15,
         marginTop: 10
     },
@@ -132,10 +134,23 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 25,
         fontWeight: 'bold',
-        
     },
     searchBar: {
+        marginBottom: 26,
+        backgroundColor: '#f2f2f2',
+    },
+    moduleItem: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        padding: 15,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ddd',
+        backgroundColor: '#f9f9f9',
+        borderRadius: 5,
         marginBottom: 10,
+    },
+    moduleText: {
+        fontSize: 16,
     },
 });
 
