@@ -26,7 +26,7 @@ export default LectureVideo
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#ffffff',
   },
   container: {
     flexGrow: 1,
