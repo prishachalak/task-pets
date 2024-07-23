@@ -56,6 +56,35 @@ export default function Profile({ navigation }) {
     }
   };
 
+  const handleDeleteModule = async (moduleCode) => {
+    try {
+        const response = await axios.put(`http://localhost:8000/api/user/${user._id}/remove-module`, { moduleCode });
+        const updatedUser = response.data;
+        setState(prevState => ({ ...prevState, user: updatedUser }));
+        alert("Module removed!");
+    } catch (error) {
+        console.error("Error removing module: ", error.message);
+        alert("Failed to remove module. Please try again.");
+    }
+  };
+
+  const confirmDelete = (moduleCode) => {
+      Alert.alert(
+          "Confirm Delete",
+          "Are you sure you want to delete this module?",
+          [
+              {
+                  text: "Cancel",
+                  style: "cancel"
+              },
+              {
+                  text: "OK",
+                  onPress: () => handleDeleteModule(moduleCode)
+              }
+          ]
+      );
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.headerRow}>
