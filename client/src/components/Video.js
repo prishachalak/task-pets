@@ -1,10 +1,8 @@
-import { StyleSheet, Text, View, SafeAreaView, ScrollView } from 'react-native';
-import React, { useState } from 'react';
+import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import React from 'react';
 import YoutubeIframe from 'react-native-youtube-iframe';
-import { CheckBox } from 'react-native-elements';
 
 const Video = ({number, title, id}) => {
-    const [checked, setChecked] = useState(false);
   return (
     <ScrollView>
         <View style={styles.titleContainer}>
@@ -20,14 +18,6 @@ const Video = ({number, title, id}) => {
             videoId={id}
           />
         </View>
-        {/* <View style={{alignSelf: 'center', marginBottom: 5}}>
-          <CheckBox
-              title="Completed"
-              checked={checked}
-              onPress={() => setChecked(!checked)}
-              containerStyle={styles.checkBoxContainer}
-            />
-        </View> */}
     </ScrollView>
   )
 }

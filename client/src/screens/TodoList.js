@@ -1,11 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, TextInput, Image, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Image, FlatList, StyleSheet, TouchableOpacity, Modal, Platform, Alert } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import axios from 'axios';
-import { AuthContext } from '../../context/auth'; // Adjust the path if necessary
+import { AuthContext } from '../../context/auth';
 
 const TodoList = () => {
   const [todos, setTodos] = useState([]);
-  const [newTodo, setNewTodo] = useState('');
+  const [currentTodo, setCurrentTodo] = useState({ text: '', description: '', deadline: new Date() });
+  const [modalVisible, setModalVisible] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [state] = useContext(AuthContext);
   const { user } = state;
 
@@ -20,23 +24,63 @@ const TodoList = () => {
       const response = await axios.get(`http://localhost:8000/api/users/${user._id}/todos`);
       setTodos(response.data);
     } catch (error) {
-        console.log('error with fetching todo');
+      console.log('Error fetching todos');
       console.error(error);
     }
   };
-  
+
   const addTodo = async () => {
-    if (newTodo.trim() === '') return;
+    if (currentTodo.text.trim() === '') {
+      Alert.alert('Error in Adding Task', 'Title is required.');
+      return;
+    }
     try {
-      const response = await axios.post(`http://localhost:8000/api/users/${user._id}/todos`, { text: newTodo });
+      const response = await axios.post(`http://localhost:8000/api/users/${user._id}/todos`, currentTodo);
       setTodos([...todos, response.data]);
-      setNewTodo('');
+      setCurrentTodo({ id: null, text: '', description: '', deadline: new Date() });
+      setModalVisible(false);
     } catch (error) {
-        console.log('error with adding todo')
+      console.log('Error adding todo');
       console.error(error);
     }
   };
-  
+
+  const editTodo = async () => {
+    if (currentTodo.text.trim() === '') {
+      Alert.alert('Error in Editing Task', 'Title is required.');
+      return;
+    }
+    try {
+      const response = await axios.put(`http://localhost:8000/api/users/${user._id}/todos/${currentTodo.id}`, currentTodo);
+      setTodos(todos.map(todo => (todo._id === currentTodo.id ? response.data : todo)));
+      setCurrentTodo({ id: null, text: '', description: '', deadline: new Date() });
+      setIsEditing(false);
+      setModalVisible(false);
+    } catch (error) {
+      console.log('Error editing todo');
+      console.error(error);
+    }
+  };
+
+  const handleEditClick = (todo) => {
+    setCurrentTodo({
+      id: todo._id,
+      text: todo.text,
+      description: todo.description,
+      deadline: new Date(todo.deadline)
+    });
+    setIsEditing(true);
+    setModalVisible(true);
+  };
+
+  const handleSaveTodo = () => {
+    if (isEditing) {
+      editTodo();
+    } else {
+      addTodo();
+    }
+  };
+
   const deleteTodo = async (todoId) => {
     try {
       await axios.delete(`http://localhost:8000/api/users/${user._id}/todos/${todoId}`);
@@ -46,85 +90,194 @@ const TodoList = () => {
     }
   };
 
+  const onDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || currentTodo.deadline;
+    setShowDatePicker(Platform.OS === 'ios');
+    setCurrentTodo({ ...currentTodo, deadline: currentDate });
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>{user ? user.name + "'s" : "Guest's"} Todo List</Text>
       <View style={styles.headerRow}>
-        <TextInput
-            style={styles.addBar}
-            placeholder="Add new todo"
-            value={newTodo}
-            onChangeText={setNewTodo}
-        />
-        <TouchableOpacity  onPress={addTodo} >
-            <Image source={require('../assets/enter.png')} style={styles.enterIcon}/>
+        <Text style={styles.headerText}>{user ? user.name + "'s" : "Guest's"} Todo List</Text>
+        <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.addButton}>
+          <Image source={require('../assets/add.png')} style={styles.icon} />
         </TouchableOpacity>
       </View>
-      
+      <Text style={{colour: '#24304f', fontWeight: 'bold'}}>To Be Completed</Text>
       <FlatList
         data={todos}
-        // keyExtractor={(item) => item._id.toString()}
         keyExtractor={(item) => item._id ? item._id.toString() : Math.random().toString()}
         renderItem={({ item }) => (
           <View style={styles.todoContainer}>
-            <Text style={styles.todoText}>{item.text}</Text>
+            <View style={styles.todoTextContainer}>
+              <Text style={styles.todoTitle}>{item.text}</Text>
+              <Text style={styles.todoDescription}>Details: {item.description}</Text>
+              <Text style={styles.todoDescription}>Deadline: {item.deadline ? new Date(item.deadline).toLocaleDateString() : 'None'}</Text>
+            </View>
+            <TouchableOpacity onPress={() => handleEditClick(item)}>
+              <Image source={require('../assets/edit.png')} style={{width: 25, height: 20, marginRight: 10}} />
+            </TouchableOpacity>
             <TouchableOpacity onPress={() => deleteTodo(item._id)}>
-              <Text style={styles.deleteText}>Done</Text>
+              <Image source={require('../assets/correct.png')} style={styles.checkIcon} />
             </TouchableOpacity>
           </View>
         )}
       />
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalTitle}>{isEditing ? 'Edit Todo' : 'Add New Todo'}</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Title"
+              value={currentTodo.text}
+              onChangeText={(text) => setCurrentTodo({ ...currentTodo, text })}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Description"
+              value={currentTodo.description}
+              onChangeText={(description) => setCurrentTodo({ ...currentTodo, description })}
+            />
+            <View style={styles.modalContainer}>
+              <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.datePickerButton}>
+                <Text style={styles.datePickerText}>Select Deadline: </Text>
+              </TouchableOpacity>
+              <DateTimePicker
+                value={currentTodo.deadline}
+                mode="date"
+                display="default"
+                onChange={onDateChange}
+              />
+            </View>
+            <View style={styles.modalContainer}>
+              <TouchableOpacity onPress={() => setModalVisible(false)}>
+                <Text style={styles.enterText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleSaveTodo}>
+                <Text style={styles.enterText}>{isEditing ? 'Save Changes' : 'Add Task'}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      padding: 20,
-      backgroundColor: '#ffffff',
+  container: {
+    flex: 1,
+    padding: 15,
+    backgroundColor: '#ffffff',
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  headerText: {
+    fontSize: 25,
+    fontWeight: 'bold',
+  },
+  addButton: {
+    marginLeft: 'auto',
+  },
+  icon: {
+    width: 40,
+    height: 40,
+  },
+  todoContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 15,
+    backgroundColor: 'lightgrey',
+    borderRadius: 5,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  todoTextContainer: {
+    flex: 1,
+  },
+  todoTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  todoDescription: {
+    fontSize: 14,
+    marginBottom: 5,
+    color: 'black',
+  },
+  checkIcon: {
+    width: 20,
+    height: 20
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalView: {
+    width: 300,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 20,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
     },
-    header: {
-      fontSize: 24,
-      fontWeight: 'bold',
-      marginBottom: 20,
-      textAlign: 'center',
-    },
-    headerRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginBottom: 15,
-    },
-    addBar: {
-      flex: 1,
-      borderWidth: 1,
-      borderColor: '#ddd',
-      padding: 10,
-      borderRadius: 5,
-    },
-    enterIcon: {
-      width: 30,
-      height: 30,
-      marginLeft: 10,
-    },
-    todoContainer: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      padding: 15,
-      borderBottomWidth: 1,
-      borderBottomColor: '#ddd',
-      backgroundColor: '#f9f9f9',
-      borderRadius: 5,
-      marginBottom: 10,
-    },
-    todoText: {
-      fontSize: 18,
-    },
-    deleteText: {
-      color: 'red',
-      fontWeight: 'bold',
-    },
-  });
-  
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+    width: '100%',
+  },
+  datePickerButton: {
+    marginBottom: 10,
+  },
+  datePickerText: {
+    fontSize: 16,
+    color: 'black',
+    marginTop: 10,
+  },
+  modalContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginTop: 10,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginTop: 10,
+  },
+  enterText: {
+    color: 'maroon',
+    fontWeight: 'bold',
+  },
+});
 
 export default TodoList;

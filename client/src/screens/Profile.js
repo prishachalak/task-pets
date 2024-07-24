@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState } from "react";
-import { Text, View, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, Alert, Image, ScrollView } from 'react-native';
 import { AuthContext } from "../../context/auth";
 import axios from "axios";
 import * as ImagePicker from 'expo-image-picker';
@@ -10,22 +10,17 @@ export default function Profile({ navigation }) {
   const [imageUri, setImageUri] = useState(user.image ? user.image.url : '');
 
   useEffect(() => {
-    (async () => {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== 'granted') {
-        alert('Sorry, we need camera roll permissions to make this work!');
-      }
-    })();
-  }, []);
-
-  useEffect(() => {
-    console.log("User updated:", user);
     if (user && user.image && user.image.url) {
       setImageUri(user.image.url);
     }
   }, [user]);
 
   const selectPhoto = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      alert('Sorry, we need camera roll permissions to make this work!');
+      return;
+    }
     try {
       let pickerResult = await ImagePicker.launchImageLibraryAsync({
         allowsEditing: true,
@@ -47,7 +42,6 @@ export default function Profile({ navigation }) {
     try {
       const response = await axios.put(`http://localhost:8000/api/user/${user._id}/update-image`, { imageUri: uri });
       const updatedUser = response.data;
-      console.log("Updated User:", updatedUser);
       setState((prevState) => ({ ...prevState, user: updatedUser }));
       alert("Profile image updated!");
     } catch (error) {
@@ -86,7 +80,7 @@ export default function Profile({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.headerRow}>
         <Text style={styles.headerText}>Your Profile:</Text>
         <View style={styles.picContainer}>
@@ -165,19 +159,18 @@ export default function Profile({ navigation }) {
       ) : (
         <Text>Add your first module!</Text>
       )}
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 15,
     backgroundColor: '#ffffff',
   },
   headerRow: {
     marginBottom: 20,
-    marginTop: 10,
   },
   headerText: {
     fontSize: 25,

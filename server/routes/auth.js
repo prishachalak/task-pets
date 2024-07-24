@@ -7,8 +7,6 @@ const router = express.Router();
 const {
   signup,
   signin,
-  forgotPassword,
-  resetPassword,
 } = require("../controllers/auth");
 
 router.get("/", (req, res) => {
@@ -18,11 +16,9 @@ router.get("/", (req, res) => {
 });
 router.post("/signup", signup);
 router.post("/signin", signin);
-router.post("/forgot-password", forgotPassword);
-router.post("/reset-password", resetPassword);
 
 router.get("/module-list", async (req, res) => {
-  const apiUrl = "http://api.nusmods.com/2015-2016/1/moduleList.json"; 
+  const apiUrl = "https://api.nusmods.com/v2/2018-2019/moduleInfo.json"; 
 
   try {
     const response = await fetch(apiUrl);
@@ -100,6 +96,7 @@ router.put('/user/:userId/remove-module', async (req, res) => {
 
 // Add a new todo
 router.post('/users/:userId/todos', async (req, res) => {
+  const { text, description, deadline } = req.body;
   console.log('Received request to add todo');
   try {
     const user = await User.findById(req.params.userId);
@@ -107,13 +104,37 @@ router.post('/users/:userId/todos', async (req, res) => {
       console.log('User not found');
       return res.status(404).send('User not found');
     }
-    const todo = { text: req.body.text };
+    const todo = { text, description, deadline };
     user.todos.push(todo);
     await user.save();
     console.log('Todo added:', todo);
     res.status(201).send(todo);
   } catch (error) {
     console.error('Error adding todo:', error);
+    res.status(500).send(error);
+  }
+});
+
+//update todo
+router.put('/users/:userId/todos/:todoId', async (req, res) => {
+  const { text, description, deadline } = req.body;
+  try {
+    const user = await User.findById(req.params.userId);
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+    const todo = user.todos.id(req.params.todoId);
+    if (!todo) {
+      return res.status(404).send('Todo not found');
+    }
+    if (text) todo.text = text;
+    if (description) todo.description = description;
+    if (deadline) todo.deadline = deadline;
+    
+    await user.save();
+    res.send(todo);
+  } catch (error) {
+    console.error('Error updating todo:', error);
     res.status(500).send(error);
   }
 });

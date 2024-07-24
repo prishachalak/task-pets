@@ -3,12 +3,15 @@ const { Schema } = mongoose;
 
 const moduleSchema = new Schema({
     moduleCode: { type: String, required: true },
-    title: { type: String, required: true }
+    title: { type: String, required: true },
+    description: { type: String, required: true },
 });
 
 const todoSchema = new Schema({
   text: { type: String, required: true },
+  description: { type: String },
   completed: { type: Boolean, default: false },
+  deadline: { type: Date },
 });
 
 const userSchema = new Schema(
