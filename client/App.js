@@ -1,5 +1,4 @@
 import React from 'react';
-import { StatusBar } from 'expo-status-bar';
 import Welcome from './src/screens/Welcome';
 import Signup from './src/screens/Signup';
 import Signin from './src/screens/Signin';
