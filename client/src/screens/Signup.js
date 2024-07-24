@@ -13,7 +13,6 @@ const Signup = ({ navigation }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
-    //context
     const [state, setState] = useContext(AuthContext);
 
     const handleSubmit = async () => {
@@ -34,19 +33,15 @@ const Signup = ({ navigation }) => {
                 alert(data.error);
                 setLoading(false);
             } else {
-                //save to context 
                 setState(data);
-                // save response in async storage
                 await AsyncStorage.setItem('@auth', JSON.stringify(data));
                 setLoading(false);
-                //console.log('SIGN IN SUCCESS =>', data);
                 alert("Sign Up Successful");
                 navigation.navigate('Signin');
             }
         } catch (err) {
             alert('Sign in failed, try again.')
             console.log(err)
-            //console.log(error.response.data)
             setLoading(false);
         }
     }
@@ -56,6 +51,7 @@ const Signup = ({ navigation }) => {
             contentContainerStyle={{ 
                 flex: 1, 
                 justifyContent: 'center',
+                backgroundColor: '#ffffff',
             }}
         >
             <View style={{ 

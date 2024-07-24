@@ -12,7 +12,6 @@ const Signin = ({navigation}) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
-    //context
     const [state, setState] = useContext(AuthContext);
     const handleSubmit = async () => {
         setLoading(true)
@@ -30,12 +29,9 @@ const Signin = ({navigation}) => {
                 alert(data.error);
                 setLoading(false);
             } else {
-                //save in context
                 setState(data);
-                // save response in async storage
                 await AsyncStorage.setItem('@auth', JSON.stringify(data));
                 setLoading(false);
-                //console.log('SIGN IN SUCCESS =>', data);
                 alert("Sign Up Successful");
                 navigation.navigate('Home');
             }
@@ -51,9 +47,10 @@ const Signin = ({navigation}) => {
             contentContainerStyle={{ 
                 flex: 1, 
                 justifyContent: 'center',
+                backgroundColor: '#ffffff',
             }}
         >
-            <View style={{ marginVertical: 100 }}>
+            <View style={{ marginVertical: 100,  }}>
                 <Logo />
                 <Text style={{
                     fontWeight: 'bold',
@@ -95,13 +92,16 @@ const Signin = ({navigation}) => {
                         color: '#ff2222',
                     }} onPress={() => navigation.navigate('Signup')}>Sign Up</Text>
                 </Text>
-                <Text style={{ 
-                    marginTop: 6,
-                    fontSize: 13,
-                    textAlign: 'center',
-                    color: '#ff2222',
-                    fontWeight: 'bold',
-                }}>
+                <Text 
+                    style={{ 
+                        marginTop: 6,
+                        fontSize: 13,
+                        textAlign: 'center',
+                        color: '#ff2222',
+                        fontWeight: 'bold',
+                    }}
+                    // onPress={() => navigation.navigate('Reset Password')}
+                >
                     Forgot Password?
                 </Text>
             </View>

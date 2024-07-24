@@ -9,6 +9,7 @@ const Welcome = ({navigation}) => {
       contentContainerStyle={{
         justifyContent: 'center',
         flex: 1,
+        backgroundColor: '#ffffff',
       }}
     >
       <Logo />

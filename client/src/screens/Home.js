@@ -41,7 +41,6 @@ const Home = ({ navigation }) => {
 
     const handleModuleClick = async module => {
         try {
-            // Check if the module already exists in the user's modules
             const moduleExists = user.modules.some(mod => mod.moduleCode === module[0]);
             
             if (moduleExists) {
@@ -49,12 +48,10 @@ const Home = ({ navigation }) => {
                 return;
             }
     
-            // Update the user's modules on the server
             const response = await axios.put(`http://localhost:8000/api/user/${user._id}/add-module`, { 
                 module: { moduleCode: module[0], title: module[1] } 
             });
     
-            // Update the local state with the new module list
             const updatedUser = response.data;
             setState(prevState => ({ ...prevState, user: updatedUser }));
     
@@ -103,6 +100,14 @@ const Home = ({ navigation }) => {
                 value={searchQuery}
                 style={styles.searchBar}
             />
+            <Text style={{
+                padding: 10, 
+                marginTop: 1, 
+                color: '#24304f', 
+                fontWeight: 'bold'
+            }}>
+                Click to add module
+            </Text>
             <FlatList
                 data={filteredModules}
                 keyExtractor={item => item[0]}
@@ -136,7 +141,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     searchBar: {
-        marginBottom: 26,
+        marginBottom: 8,
         backgroundColor: '#f2f2f2',
     },
     moduleItem: {

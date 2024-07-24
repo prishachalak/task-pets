@@ -67,7 +67,7 @@ const QuizPage = ({ navigation }) => {
         <Text style={styles.title}>Quiz Result</Text>
         <Text style={styles.score}>Your Score: {score} / {questions.length}</Text>
         <Button title="Restart Quiz" onPress={handleRestartQuiz} />
-        <Button title="Back to Quests" onPress={() => navigation.navigate('TempQuest')} />
+        <Button title="Back to Quests" onPress={() => navigation.navigate('Quest Page')} />
       </View>
     );
   }
@@ -106,6 +106,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    backgroundColor: '#ffffff',
   },
   title: {
     fontSize: 24,
