@@ -5,7 +5,7 @@ import Video from '../components/Video';
 const LectureVideo = () => {
 
   return (
-    <SafeAreaView style={{backgroundColor: '#ffffff'}}>
+    <SafeAreaView style={{backgroundColor: '#ffffff', flex: 1}}>
       <ScrollView contentContainerStyle={{
         padding: 20,
         alignItems: 'flex-start', 

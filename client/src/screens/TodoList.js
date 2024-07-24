@@ -6,7 +6,7 @@ import { AuthContext } from '../../context/auth';
 
 const TodoList = () => {
   const [todos, setTodos] = useState([]);
-  const [currentTodo, setCurrentTodo] = useState({ text: '', description: '', deadline: new Date() });
+  const [currentTodo, setCurrentTodo] = useState({ id: null, text: '', description: '', deadline: new Date() });
   const [modalVisible, setModalVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -24,7 +24,6 @@ const TodoList = () => {
       const response = await axios.get(`http://localhost:8000/api/users/${user._id}/todos`);
       setTodos(response.data);
     } catch (error) {
-      console.log('Error fetching todos');
       console.error(error);
     }
   };
@@ -100,21 +99,28 @@ const TodoList = () => {
     <View style={styles.container}>
       <View style={styles.headerRow}>
         <Text style={styles.headerText}>{user ? user.name + "'s" : "Guest's"} Todo List</Text>
-        <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.addButton}>
-          <Image source={require('../assets/add.png')} style={styles.icon} />
+        <TouchableOpacity onPress={() => setModalVisible(true)} style={{marginLeft: 'auto'}}>
+          <Image source={require('../assets/add.png')} style={{width: 35, height: 35}} />
         </TouchableOpacity>
       </View>
-      <Text style={{colour: '#24304f', fontWeight: 'bold'}}>To Be Completed</Text>
+      <Text style={{fontWeight: 'bold', color: 'maroon'}}>To Be Completed:</Text>
       <FlatList
         data={todos}
         keyExtractor={(item) => item._id ? item._id.toString() : Math.random().toString()}
         renderItem={({ item }) => (
           <View style={styles.todoContainer}>
-            <View style={styles.todoTextContainer}>
+          {item.description ? (
+            <View style={{flex: 1}}>
               <Text style={styles.todoTitle}>{item.text}</Text>
               <Text style={styles.todoDescription}>Details: {item.description}</Text>
               <Text style={styles.todoDescription}>Deadline: {item.deadline ? new Date(item.deadline).toLocaleDateString() : 'None'}</Text>
             </View>
+          ) : (
+            <View style={{flex: 1}}>
+              <Text style={styles.todoTitle}>{item.text}</Text>
+              <Text style={styles.todoDescription}>Deadline: {item.deadline ? new Date(item.deadline).toLocaleDateString() : 'None'}</Text>
+            </View>
+          )}
             <TouchableOpacity onPress={() => handleEditClick(item)}>
               <Image source={require('../assets/edit.png')} style={{width: 25, height: 20, marginRight: 10}} />
             </TouchableOpacity>
@@ -133,7 +139,7 @@ const TodoList = () => {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalView}>
-            <Text style={styles.modalTitle}>{isEditing ? 'Edit Todo' : 'Add New Todo'}</Text>
+            <Text style={styles.modalTitle}>{isEditing ? 'Edit Task' : 'Add New Task'}</Text>
             <TextInput
               style={styles.input}
               placeholder="Title"
@@ -147,7 +153,7 @@ const TodoList = () => {
               onChangeText={(description) => setCurrentTodo({ ...currentTodo, description })}
             />
             <View style={styles.modalContainer}>
-              <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.datePickerButton}>
+              <TouchableOpacity onPress={() => setShowDatePicker(true)} style={{marginBottom: 10}}>
                 <Text style={styles.datePickerText}>Select Deadline: </Text>
               </TouchableOpacity>
               <DateTimePicker
@@ -187,13 +193,6 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
   },
-  addButton: {
-    marginLeft: 'auto',
-  },
-  icon: {
-    width: 40,
-    height: 40,
-  },
   todoContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -202,9 +201,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: 10,
     marginBottom: 10,
-  },
-  todoTextContainer: {
-    flex: 1,
   },
   todoTitle: {
     fontSize: 18,
@@ -232,14 +228,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 20,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
   },
   modalTitle: {
     fontSize: 20,
@@ -253,9 +241,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingHorizontal: 10,
     width: '100%',
-  },
-  datePickerButton: {
-    marginBottom: 10,
   },
   datePickerText: {
     fontSize: 16,
