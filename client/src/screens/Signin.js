@@ -92,18 +92,6 @@ const Signin = ({navigation}) => {
                         color: '#ff2222',
                     }} onPress={() => navigation.navigate('Signup')}>Sign Up</Text>
                 </Text>
-                <Text 
-                    style={{ 
-                        marginTop: 6,
-                        fontSize: 13,
-                        textAlign: 'center',
-                        color: '#ff2222',
-                        fontWeight: 'bold',
-                    }}
-                    // onPress={() => navigation.navigate('Reset Password')}
-                >
-                    Forgot Password?
-                </Text>
             </View>
         </KeyboardAwareScrollView>
     );

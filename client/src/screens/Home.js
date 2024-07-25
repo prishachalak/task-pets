@@ -1,5 +1,13 @@
 import React, { useEffect, useState, useContext } from "react";
-import { View, Text, TouchableOpacity, ActivityIndicator, FlatList, Image, StyleSheet } from "react-native";
+import { 
+    View, 
+    Text, 
+    TouchableOpacity, 
+    ActivityIndicator, 
+    FlatList, 
+    Image, 
+    StyleSheet, 
+    Alert } from "react-native";
 import { Searchbar } from "react-native-paper";
 import axios from "axios";
 import { AuthContext } from '../../context/auth';
@@ -16,8 +24,8 @@ const Home = ({ navigation }) => {
     useEffect(() => {
         axios.get(`\module-list`)
             .then(response => {
-                setModules(Object.entries(response.data)); // Convert to array of [code, name] pairs
-                setFilteredModules(Object.entries(response.data));
+                setModules(response.data); 
+                setFilteredModules(response.data);
                 setIsLoading(false);
             })
             .catch(error => {
@@ -26,12 +34,12 @@ const Home = ({ navigation }) => {
             });
     }, []);
 
-    const onChangeSearch = query => {
+    const searchMod = query => {
         setSearchQuery(query);
         if (query) {
-            const filteredData = modules.filter(([code, name]) =>
-                code.toLowerCase().includes(query.toLowerCase()) || 
-                name.toLowerCase().includes(query.toLowerCase())  
+            const filteredData = modules.filter(module =>
+                module.moduleCode.toLowerCase().includes(query.toLowerCase()) || 
+                module.title.toLowerCase().includes(query.toLowerCase())  
             );
             setFilteredModules(filteredData);              
         } else {
@@ -39,23 +47,40 @@ const Home = ({ navigation }) => {
         }
     };
 
+    const confirmAdd = (module) => {
+        Alert.alert(
+            "Module Details",
+            "Description: " + module.description,
+            [
+                {
+                    text: "Cancel", 
+                    style: 'cancel'
+                },
+                {
+                    text: "Add", 
+                    onPress: () => handleModuleClick(module)
+                }
+            ]
+        );
+    };
+
     const handleModuleClick = async module => {
         try {
-            const moduleExists = user.modules.some(mod => mod.moduleCode === module[0]);
-            
+            const moduleExists = user.modules.some(mod => mod.moduleCode === module.moduleCode);
             if (moduleExists) {
                 alert("Module already added!");
                 return;
             }
-    
             const response = await axios.put(`http://localhost:8000/api/user/${user._id}/add-module`, { 
-                module: { moduleCode: module[0], title: module[1] } 
+                module: { 
+                    moduleCode: module.moduleCode, 
+                    title: module.title, 
+                    description: module.description 
+                } 
             });
-    
             const updatedUser = response.data;
             setState(prevState => ({ ...prevState, user: updatedUser }));
-    
-            alert("Added module!");
+            alert("Module Added!");
         } catch (error) {
             console.error("Error adding module: ", error);
             alert("Failed to add module. Please try again.");
@@ -63,9 +88,9 @@ const Home = ({ navigation }) => {
     };
 
     const renderModuleItem = ({ item }) => (
-        <TouchableOpacity onPress={() => handleModuleClick(item)}>
+        <TouchableOpacity onPress={() => confirmAdd(item)}>
             <View style={styles.moduleItem}>
-                <Text style={styles.moduleText}>{item[0]} - {item[1]}</Text>
+                <Text style={{fontSize: 16}}> {item.moduleCode}: {item.title}</Text>
             </View>
         </TouchableOpacity>
     );
@@ -85,7 +110,7 @@ const Home = ({ navigation }) => {
                     Welcome {user ? user.name : 'Guest'}!
                 </Text>
                 <TouchableOpacity 
-                    style={styles.iconContainer}
+                    style={{ marginLeft: 'auto' }}
                     onPress={() => navigation.navigate('Profile')}
                 >
                     <Image 
@@ -96,21 +121,14 @@ const Home = ({ navigation }) => {
             </View>
             <Searchbar
                 placeholder="Find your module"
-                onChangeText={onChangeSearch}
+                onChangeText={searchMod}
                 value={searchQuery}
                 style={styles.searchBar}
             />
-            <Text style={{
-                padding: 10, 
-                marginTop: 1, 
-                color: '#24304f', 
-                fontWeight: 'bold'
-            }}>
-                Click to add module
-            </Text>
+            <Text style={styles.subheading}> Click to add module </Text>
             <FlatList
                 data={filteredModules}
-                keyExtractor={item => item[0]}
+                keyExtractor={item => item.moduleCode}
                 renderItem={renderModuleItem}
             />
         </View>
@@ -120,17 +138,13 @@ const Home = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 10,
+        padding: 15,
         backgroundColor: '#ffffff',
     },
     headerRow: {
         flexDirection: 'row', 
         alignItems: 'center', 
         marginBottom: 15,
-        marginTop: 10
-    },
-    iconContainer: {
-        marginLeft: 'auto',
     },
     icon: {
         width: 30,
@@ -144,18 +158,18 @@ const styles = StyleSheet.create({
         marginBottom: 8,
         backgroundColor: '#f2f2f2',
     },
+    subheading: {
+        padding: 10, 
+        color: '#24304f', 
+        fontWeight: 'bold'
+    },
     moduleItem: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
         padding: 15,
         borderBottomWidth: 1,
         borderBottomColor: '#ddd',
         backgroundColor: '#f9f9f9',
         borderRadius: 5,
         marginBottom: 10,
-    },
-    moduleText: {
-        fontSize: 16,
     },
 });
 
