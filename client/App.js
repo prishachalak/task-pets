@@ -27,7 +27,7 @@ export default function App() {
           <Stack.Screen name="Quest Page" component={QuestPage}/>
           <Stack.Screen name="Todo List" component={TodoList}/>
           <Stack.Screen name="Lecture Videos" component={LectureVideo}/>
-          <Stack.Screen name="Quiz" component={QuizPage} options={{ title: 'Quiz' }}/>
+          <Stack.Screen name="QuizPage" component={QuizPage}/>
         </Stack.Navigator>  
       </AuthProvider>
     </NavigationContainer>
