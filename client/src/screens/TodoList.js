@@ -6,16 +6,18 @@ import { AuthContext } from '../../context/auth';
 
 const TodoList = () => {
   const [todos, setTodos] = useState([]);
+  const [completedTodos, setCompletedTodos] = useState([]);
   const [currentTodo, setCurrentTodo] = useState({ id: null, text: '', description: '', deadline: new Date() });
   const [modalVisible, setModalVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [state] = useContext(AuthContext);
+  const [state, setState] = useContext(AuthContext);
   const { user } = state;
 
   useEffect(() => {
     if (user) {
       fetchTodos();
+      fetchCompletedTodos();
     }
   }, [user]);
 
@@ -27,6 +29,15 @@ const TodoList = () => {
       console.error(error);
     }
   };
+
+  const fetchCompletedTodos = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8000/api/users/${user._id}/completed-todos`);
+      setCompletedTodos(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   const addTodo = async () => {
     if (currentTodo.text.trim() === '') {
@@ -80,10 +91,33 @@ const TodoList = () => {
     }
   };
 
+  const completeTodo = async (todoId) => {
+    try {
+      const response = await axios.put(`http://localhost:8000/api/users/${user._id}/todos/${todoId}/complete`);
+      const updatedTodo = response.data;
+  
+      setState(prevState => {
+        if (!prevState.user) return prevState; 
+        const updatedUser = {
+          ...prevState.user,
+          todos: prevState.user.todos?.filter(todo => todo._id !== todoId) || [],
+          completedTodos: [...(prevState.user.completedTodos || []), updatedTodo],
+        };
+        return { ...prevState, user: updatedUser };
+      });
+  
+      alert("Task Completed!");
+    } catch (error) {
+      console.error("Error completing todo:", error.message);
+      alert("Failed to complete todo. Please try again.");
+    }
+  };
+
   const deleteTodo = async (todoId) => {
     try {
-      await axios.delete(`http://localhost:8000/api/users/${user._id}/todos/${todoId}`);
-      setTodos(todos.filter(todo => todo._id !== todoId));
+      await axios.delete(`http://localhost:8000/api/users/${user._id}/completed-todos/${todoId}`);
+      setCompletedTodos(completedTodos.filter(todo => todo._id !== todoId));
+      alert("Task Deleted!");
     } catch (error) {
       console.error(error);
     }
@@ -104,8 +138,48 @@ const TodoList = () => {
         </TouchableOpacity>
       </View>
       <Text style={{fontWeight: 'bold', color: 'maroon'}}>To Be Completed:</Text>
+      <View style={{marginBottom: 10}}>
+        <FlatList
+            data={todos}
+            keyExtractor={(item) => item._id ? item._id.toString() : Math.random().toString()}
+            renderItem={({ item }) => (
+              <View style={styles.todoContainer}>
+              {item.description ? (
+                <View style={{flex: 1}}>
+                  <Text style={styles.todoTitle}>{item.text}</Text>
+                  <Text style={styles.todoDescription}>Details: {item.description}</Text>
+                  <Text style={styles.todoDescription}>Deadline: {item.deadline ? new Date(item.deadline).toLocaleDateString() : 'None'}</Text>
+                </View>
+              ) : (
+                <View style={{flex: 1}}>
+                  <Text style={styles.todoTitle}>{item.text}</Text>
+                  <Text style={styles.todoDescription}>Deadline: {item.deadline ? new Date(item.deadline).toLocaleDateString() : 'None'}</Text>
+                </View>
+              )}
+                <TouchableOpacity onPress={() => handleEditClick(item)}>
+                  <Image source={require('../assets/edit.png')} style={{width: 25, height: 20, marginRight: 10}} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => completeTodo(item._id)}>
+                  <Image source={require('../assets/correct.png')} style={styles.checkIcon} />
+                </TouchableOpacity>
+              </View>
+            )}
+          />
+      </View>
+      {todos.length === 0 ? (
+        <View style={{alignItems: 'center', marginTop: 25, marginBottom: 35}}>
+          <Text style={{fontWeight: 'bold', fontSize: 25, color: '#467ba3', marginBottom: 10}}>Congradulations!</Text>
+          <Text style={{fontWeight: 'bold', fontSize: 18, color: '#467ba3'}}>You've completed all your tasks.</Text>
+        </View>
+      ) : (
+        <Text></Text>
+      ) }
+      <View>
+        <Text style={{fontWeight: 'bold', color: 'maroon'}} >Completed Tasks:</Text>
+      </View>
+      <View>
       <FlatList
-        data={todos}
+        data={completedTodos}
         keyExtractor={(item) => item._id ? item._id.toString() : Math.random().toString()}
         renderItem={({ item }) => (
           <View style={styles.todoContainer}>
@@ -121,16 +195,13 @@ const TodoList = () => {
               <Text style={styles.todoDescription}>Deadline: {item.deadline ? new Date(item.deadline).toLocaleDateString() : 'None'}</Text>
             </View>
           )}
-            <TouchableOpacity onPress={() => handleEditClick(item)}>
-              <Image source={require('../assets/edit.png')} style={{width: 25, height: 20, marginRight: 10}} />
-            </TouchableOpacity>
             <TouchableOpacity onPress={() => deleteTodo(item._id)}>
-              <Image source={require('../assets/correct.png')} style={styles.checkIcon} />
+              <Image source={require('../assets/delete.png')} style={styles.checkIcon} />
             </TouchableOpacity>
           </View>
         )}
       />
-
+      </View>
       <Modal
         animationType="slide"
         transparent={true}

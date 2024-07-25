@@ -82,20 +82,19 @@ export default function Profile({ navigation }) {
       <View style={{marginBottom: 20}}>
         <Text style={styles.headerText}>Your Profile:</Text>
         <View style={{alignItems: 'center'}}>
+        <TouchableOpacity onPress={selectPhoto}>
           {imageUri ? (
-            <Image 
-              source={{ uri: imageUri }} 
-              style={styles.profilePicture} 
-            />
-          ) : (
-            <Image 
-              source={require('../assets/profile.png')} 
-              style={styles.profilePicture} 
-            />
-          )}
-          <TouchableOpacity onPress={selectPhoto}>
-            <Text style={styles.uploadText}>{imageUri ? "Change Photo" : "Choose Photo"}</Text>
-          </TouchableOpacity>
+              <Image 
+                source={{ uri: imageUri }} 
+                style={styles.profilePicture} 
+              />
+            ) : (
+              <Image 
+                source={require('../assets/profile.png')} 
+                style={styles.profilePicture} 
+              />
+            )}
+        </TouchableOpacity>
         </View>
         <Text style={styles.subHeadingText}>
           Name: <Text style={styles.subHeadingContent}>{user.name}</Text>

@@ -14,6 +14,12 @@ const todoSchema = new Schema({
   deadline: { type: Date },
 });
 
+const completedTodoSchema = new Schema({
+  text: { type: String, required: true },
+  description: { type: String },
+  deadline: { type: Date },
+})
+
 const userSchema = new Schema(
   {
     name: {
@@ -44,6 +50,7 @@ const userSchema = new Schema(
     resetCode: "",
     modules: [moduleSchema],
     todos: [todoSchema],
+    completedTodos: [completedTodoSchema],
   },
   { timestamps: true },
 );

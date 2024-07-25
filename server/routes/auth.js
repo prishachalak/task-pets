@@ -156,17 +156,62 @@ router.get('/users/:userId/todos', async (req, res) => {
   }
 });
 
-router.delete('/users/:userId/todos/:todoId', async (req, res) => {
+// mark todo as completed
+router.put('/users/:userId/todos/:todoId/complete', async (req, res) => {
   try {
     const user = await User.findById(req.params.userId);
     if (!user) {
       return res.status(404).send('User not found');
     }
-    user.todos = user.todos.filter(todo => todo._id.toString() !== req.params.todoId);
+    const todo = user.todos.id(req.params.todoId);
+    if (!todo) {
+      return res.status(404).send('Todo not found');
+    }
+    user.todos = user.todos.filter(t => t._id.toString() !== req.params.todoId);
+    const completedTodo = {
+      text: todo.text,
+      description: todo.description,
+      deadline: todo.deadline,
+    };
+    user.completedTodos.push(completedTodo);
+
     await user.save();
-    res.send(user.todos);
+    res.status(201).send(completedTodo);
   } catch (error) {
-    console.error('Error deleting todo:', error);
+    console.error('Error completing todo:', error);
+    res.status(500).send(error);
+  }
+});
+
+//get completed todos
+router.get('/users/:userId/completed-todos', async (req, res) => {
+  console.log(`Fetching completed todos for user ID: ${req.params.userId}`);
+  try {
+    const user = await User.findById(req.params.userId);
+    if (!user) {
+      console.log('User not found for ID:', req.params.userId);
+      return res.status(404).send('User not found');
+    }
+    console.log('Completed todos found for user:', user.todos);
+    res.send(user.completedTodos);
+  } catch (error) {
+    console.error('Error fetching completed todos for user ID:', req.params.userId, error);
+    res.status(500).send(error);
+  }
+});
+
+// delete completed todos 
+router.delete('/users/:userId/completed-todos/:todoId', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId);
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+    user.completedTodos = user.completedTodos.filter(todo => todo._id.toString() !== req.params.todoId);
+    await user.save();
+    res.send(user.completedTodos);
+  } catch (error) {
+    console.error('Error deleting completed todo:', error);
     res.status(500).send(error);
   }
 });
