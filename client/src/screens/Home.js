@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     },
     subheading: {
         padding: 10, 
-        color: '#24304f', 
+        color: 'red', 
         fontWeight: 'bold'
     },
     moduleItem: {
