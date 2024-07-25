@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Button } from 'react-native';
-import * as Animatable from 'react-native-animatable';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
 const questions = [
   {
@@ -14,14 +13,15 @@ const questions = [
     correctOption: "To identify and analyse the result of business operations"
   },
   {
-	question : "Which personnel of a financial firm play a key role in management accounting?",
-	options: ["Investors", "Managers", "Suppliers", "Customers"],
-	correctOption: "Managers"
+    question : "Which personnel of a financial firm play a key role in management accounting?",
+    options: ["Investors", "Managers", "Suppliers", "Customers"],
+    correctOption: "Managers"
   },
   // Add more questions as needed
 ];
 
-const QuizPage = ({ navigation }) => {
+const QuizPage = ({ navigation, route }) => {
+  const { questId } = route.params;
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [score, setScore] = useState(0);
@@ -52,22 +52,17 @@ const QuizPage = ({ navigation }) => {
     setShowResult(false);
   };
 
-  useEffect(() => {
-    // Optional: Add a timer for each question
-    let timer;
-    if (!showResult) {
-      timer = setTimeout(handleNextQuestion, 10000); // 10 seconds for each question
-    }
-    return () => clearTimeout(timer);
-  }, [currentQuestionIndex, showResult]);
-
   if (showResult) {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Quiz Result</Text>
         <Text style={styles.score}>Your Score: {score} / {questions.length}</Text>
-        <Button title="Restart Quiz" onPress={handleRestartQuiz} />
-        <Button title="Back to Quests" onPress={() => navigation.navigate('Quest Page')} />
+        <TouchableOpacity style={styles.button} onPress={handleRestartQuiz}>
+          <Text style={styles.buttonText}>Restart Quiz</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Quest Page', { questId, score })}>
+          <Text style={styles.buttonText}>Back to Quests</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -94,7 +89,9 @@ const QuizPage = ({ navigation }) => {
         ))}
       </View>
       {selectedOption && (
-        <Button title="Next Question" onPress={handleNextQuestion} />
+        <TouchableOpacity style={styles.button} onPress={handleNextQuestion}>
+          <Text style={styles.buttonText}>Next Question</Text>
+        </TouchableOpacity>
       )}
     </View>
   );
@@ -141,6 +138,18 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginVertical: 20,
+  },
+  button: {
+    backgroundColor: '#4caf50',
+    padding: 10,
+    borderRadius: 5,
+    marginVertical: 5,
+    alignItems: 'center',
+    width: '100%',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
 

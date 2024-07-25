@@ -1,26 +1,72 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as Animatable from 'react-native-animatable';
 import ConfettiCannon from 'react-native-confetti-cannon';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const QuestPage = () => {
+const QuestPage = ({ route }) => {
   const [quests, setQuests] = useState([
-    { id: 1, title: 'Quest 1', description: 'Read the first chapter and complete the quiz to earn 100 points.', progress: 50, completed: false },
-    { id: 2, title: 'Quest 2', description: 'Watch the lecture video and take notes to earn 50 points.', progress: 20, completed: false },
+    { id: 1, title: 'Quest 1', description: 'Read the first chapter and complete the quiz.', attempts: [], bestScore: 0, maxScore: 3 },
+    { id: 2, title: 'Quest 2', description: 'Read the second chapter and complete the quiz.', attempts: [], bestScore: 0, maxScore: 3 },
+    { id: 3, title: 'Quest 3', description: 'Read the third chapter and complete the quiz.', attempts: [], bestScore: 0, maxScore: 3 },
+    { id: 4, title: 'Quest 4', description: 'Read the fourth chapter and complete the quiz.', attempts: [], bestScore: 0, maxScore: 3 },
+    { id: 5, title: 'Quest 5', description: 'Read the fifth chapter and complete the quiz.', attempts: [], bestScore: 0, maxScore: 3 },
   ]);
   const [showConfetti, setShowConfetti] = useState(false);
   const [selectedQuest, setSelectedQuest] = useState(null);
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
 
-  const markAsCompleted = (id) => {
-    setQuests(quests.map(quest =>
-      quest.id === id ? { ...quest, progress: 100, completed: true } : quest
-    ));
-    setShowConfetti(true);
-    setTimeout(() => setShowConfetti(false), 3000);
+  useEffect(() => {
+    loadQuests();
+  }, []);
+
+  useEffect(() => {
+    if (route.params?.questId && route.params?.score !== undefined) {
+      recordAttempt(route.params.questId, route.params.score);
+    }
+  }, [isFocused]);
+
+  const loadQuests = async () => {
+    try {
+      const savedQuests = await AsyncStorage.getItem('quests');
+      if (savedQuests) {
+        const parsedQuests = JSON.parse(savedQuests);
+        console.log('Loaded quests:', parsedQuests); // Log loaded quests
+        setQuests(parsedQuests);
+      }
+    } catch (error) {
+      console.error('Failed to load quests from storage', error);
+    }
+  };
+
+  const saveQuests = async (questsToSave) => {
+    try {
+      await AsyncStorage.setItem('quests', JSON.stringify(questsToSave));
+      console.log('Saved quests:', questsToSave); // Log saved quests
+    } catch (error) {
+      console.error('Failed to save quests to storage', error);
+    }
+  };
+
+  const recordAttempt = (id, score) => {
+    const updatedQuests = quests.map(quest => {
+      if (quest.id === id) {
+        const newAttempts = [...quest.attempts, score];
+        const newBestScore = Math.max(...newAttempts);
+        if (newBestScore === quest.maxScore) {
+          setShowConfetti(true);
+          setTimeout(() => setShowConfetti(false), 3000);
+        }
+        return { ...quest, attempts: newAttempts, bestScore: newBestScore };
+      }
+      return quest;
+    });
+    setQuests(updatedQuests);
+    saveQuests(updatedQuests);
   };
 
   const handleQuestPress = (id) => {
@@ -44,8 +90,9 @@ const QuestPage = () => {
                 colors={['#ff9a9e', '#fad0c4']}
                 style={styles.questBackground}
               >
-                <Icon name={quest.completed ? 'check-circle' : 'circle-o'} size={30} color={quest.completed ? '#4caf50' : '#ccc'} />
+                <Icon name={quest.bestScore === quest.maxScore ? 'check-circle' : 'times-circle'} size={30} color={quest.bestScore === quest.maxScore ? '#4caf50' : '#f44336'} />
                 <Text style={styles.questTitle}>{quest.title}</Text>
+                <Text style={styles.questScore}>Best Score: {quest.bestScore} / {quest.maxScore}</Text>
               </LinearGradient>
             </TouchableOpacity>
           </Animatable.View>
@@ -59,26 +106,12 @@ const QuestPage = () => {
               <>
                 <Text style={styles.modalTitle}>{selectedQuest.title}</Text>
                 <Text style={styles.modalDescription}>{selectedQuest.description}</Text>
-                <View style={styles.progressBar}>
-                  <View style={[styles.progress, { width: `${selectedQuest.progress}%` }]}>
-                    <Text style={styles.progressText}>{selectedQuest.progress}%</Text>
-                  </View>
-                </View>
+                <Text style={styles.questScore}>Best Score: {selectedQuest.bestScore} / {selectedQuest.maxScore}</Text>
                 <TouchableOpacity
-                  style={[styles.button, selectedQuest.completed && styles.buttonDisabled]}
-                  onPress={() => {
-                    markAsCompleted(selectedQuest.id);
-                    setSelectedQuest(null);
-                  }}
-                  disabled={selectedQuest.completed}
-                >
-                  <Text style={styles.buttonText}>{selectedQuest.completed ? 'Completed' : 'Mark as Completed'}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.button}
+                  style={styles.actionButton}
                   onPress={() => {
                     setSelectedQuest(null);
-                    navigation.navigate('Quiz');
+                    navigation.navigate('QuizPage', { questId: selectedQuest.id });
                   }}
                 >
                   <Text style={styles.buttonText}>Take Quiz</Text>
@@ -130,6 +163,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 10,
   },
+  questScore: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 5,
+  },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -153,34 +191,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
   },
-  progressBar: {
-    backgroundColor: '#ddd',
-    borderRadius: 5,
-    overflow: 'hidden',
-    height: 20,
-    marginBottom: 15,
-    width: '100%',
-  },
-  progress: {
-    backgroundColor: '#4caf50',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  progressText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  button: {
+  actionButton: {
     backgroundColor: '#4caf50',
     padding: 10,
     borderRadius: 5,
     marginVertical: 5,
     alignItems: 'center',
     width: '100%',
-  },
-  buttonDisabled: {
-    backgroundColor: '#ccc',
   },
   buttonText: {
     color: '#fff',
