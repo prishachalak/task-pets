@@ -81,7 +81,7 @@ export default function Profile({ navigation }) {
     <ScrollView style={styles.container}>
       <View style={{marginBottom: 20}}>
         <Text style={styles.headerText}>Your Profile:</Text>
-        <View style={{alignItems: 'center'}}>
+        <View style={{alignItems: 'center', marginBottom: 15}}>
         <TouchableOpacity onPress={selectPhoto}>
           {imageUri ? (
               <Image 

@@ -11,7 +11,7 @@ const TodoList = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [state, setState] = useContext(AuthContext);
+  const [state] = useContext(AuthContext);
   const { user } = state;
 
   useEffect(() => {
@@ -44,11 +44,16 @@ const TodoList = () => {
       Alert.alert('Error in Adding Task', 'Title is required.');
       return;
     }
+    console.log('completed: ' + completedTodos);
+    console.log('not completed: ' + todos);
     try {
       const response = await axios.post(`http://localhost:8000/api/users/${user._id}/todos`, currentTodo);
-      setTodos([...todos, response.data]);
+      const newTodo = response.data; 
+      setTodos([...todos, newTodo]);
       setCurrentTodo({ id: null, text: '', description: '', deadline: new Date() });
       setModalVisible(false);
+      await fetchTodos();  
+      await fetchCompletedTodos();
     } catch (error) {
       console.log('Error adding todo');
       console.error(error);
@@ -66,6 +71,8 @@ const TodoList = () => {
       setCurrentTodo({ id: null, text: '', description: '', deadline: new Date() });
       setIsEditing(false);
       setModalVisible(false);
+      await fetchTodos();  
+      await fetchCompletedTodos();
     } catch (error) {
       console.log('Error editing todo');
       console.error(error);
@@ -95,23 +102,17 @@ const TodoList = () => {
     try {
       const response = await axios.put(`http://localhost:8000/api/users/${user._id}/todos/${todoId}/complete`);
       const updatedTodo = response.data;
-  
-      setState(prevState => {
-        if (!prevState.user) return prevState; 
-        const updatedUser = {
-          ...prevState.user,
-          todos: prevState.user.todos?.filter(todo => todo._id !== todoId) || [],
-          completedTodos: [...(prevState.user.completedTodos || []), updatedTodo],
-        };
-        return { ...prevState, user: updatedUser };
-      });
-  
+      setTodos(todos.filter(todo => todo._id !== todoId));
+      setCompletedTodos([...completedTodos, updatedTodo]);
       alert("Task Completed!");
+      await fetchTodos();  
+      await fetchCompletedTodos();
     } catch (error) {
       console.error("Error completing todo:", error.message);
       alert("Failed to complete todo. Please try again.");
     }
   };
+  
 
   const deleteTodo = async (todoId) => {
     try {
