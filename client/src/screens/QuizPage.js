@@ -21,7 +21,7 @@ const questions = [
 ];
 
 const QuizPage = ({ navigation, route }) => {
-  const { questId } = route.params;
+  const { questId, userId } = route.params; // Get userId from route params
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [score, setScore] = useState(0);
@@ -60,7 +60,10 @@ const QuizPage = ({ navigation, route }) => {
         <TouchableOpacity style={styles.button} onPress={handleRestartQuiz}>
           <Text style={styles.buttonText}>Restart Quiz</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Quest Page', { questId, score })}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('Quest Page', { questId, score, userId })} // Pass userId back
+        >
           <Text style={styles.buttonText}>Back to Quests</Text>
         </TouchableOpacity>
       </View>

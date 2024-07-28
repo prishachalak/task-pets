@@ -142,7 +142,15 @@ export default function Profile({ navigation }) {
                   <Text style={styles.buttonText}>Lecture Videos</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  onPress={() => navigation.navigate('Quest Page')}
+                  // onPress={() => navigation.navigate('Quest Page', { user })}
+                  onPress={() => {
+                    if (user && user._id) {
+                      console.log('Navigating to QuestPage with user:', user);
+                      navigation.navigate('Quest Page', { userId: user._id });
+                    } else {
+                      console.error('User object is not defined or missing _id');
+                    }
+                  }}
                   style={styles.moduleButtons}
                 >
                   <Text style={styles.buttonText}>Quest Page</Text>
