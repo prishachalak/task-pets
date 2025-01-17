@@ -1,2 +1,4 @@
 # task-pets
-Orbital Project Team 6420 LuminaQuest
+Over the summer of 2024, I co-developed TaskPets, a gamified study app. As university students, we struggled to keep up with the intense workload, due to the monotonous learning methods. This inspired us to create TaskPets – a one-stop learning platform that transforms learning into an engaging and interactive journey for NUS students. Our app offers users a to-do list, promoting productivity. TaskPets is also linked to the NUS Mods API (https://api.nusmods.com/v2/2018-2019/moduleInfo.json), allowing users to pick the modules they are taking. Users can access the respective lecture videos and quizzes within each module. These quizzes promote active learning as users can directly apply their newfound knowledge from the lecture videos. In the future, we aim to further develop the gamified features within our application, using a point system. Users would see their pets grow with each task completed and the consequent points earned. 
+
+We built the front end using React Native (JavaScript/CSS) and the back end with MongoDB and NodeJs.
